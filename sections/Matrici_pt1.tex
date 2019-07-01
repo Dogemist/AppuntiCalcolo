@@ -1,0 +1,439 @@
+\section{Matrici (Metodi diretti)}
+\label{Matrici (Metodi diretti)}
+
+Lo scopo di questo paragrafo è la risoluzione di sistemi attraverso l'uso delle matrici. Il sistema solitamente viene scomposto in un'equazione \textit{A}\textbf{x}=\textbf{b} dove:
+\begin{itemize}
+\item $A^{n*n}$=matrice contente le espressioni
+\item \textbf{x}=vettore delle incognite
+\item \textbf{b}=vettore dei termini noti
+\end{itemize}
+
+\noindent
+Il concetto dei metodi diretti si basa sulla \textit{fattorizzazione}:
+\begin{itemize}
+\item Trasformo A nel prodotto di due matrici: $A = BC$
+\item Il sistema passa da $Ax = b$ a $BC x = b$
+\item Si pone $y = Cx$
+\item Si risolvono i due sistemi $B y = b$ e $C x = y$ 
+\end{itemize}
+
+
+
+\subsection{Gauss}
+\label{Gauss}
+Permette di trasformare la matrice A in una matrice U triangolare superiore del tipo \textit{$A = LU$} con L triangolare inferiore composta dai soli moltiplicatori di A.
+\\
+\\
+Per ottenere A diminuita attraverso Gauss si possono usare due modi:
+\subsubsection{Gauss senza pivoting}
+\label{Gauss senza pivoting}
+Metodo "semplice e veloce" rispetto alla sua controparte. Ci si basa sul pivot che ci troviamo (pivot = primo elemento non nullo del gradino della matrice) e si azzerano i valori sotto il pivot. Ad esempio:
+$$ A =
+\begin{bmatrix}
+\fbox{2} & 1 & 3 \\
+4 & 3 & 10 \\
+-2 & 1 & 7 
+\end{bmatrix}
+$$
+\noindent
+Il pivot in questo caso è 2 (posizione 1,1).
+\\
+\\
+Ora determino i \textbf{moltiplicatori} i quali mi permettono di ottenere la colonna 0. In questo caso i moltiplicatori sono:
+\begin{itemize}
+\item $l_{21}$ = moltiplicatore della riga 2 con la riga 1 = $a_{21}/a_{11}$ = 4/2 = 2
+\item $l_{31}$ = moltiplicatore della riga 3 con la riga 1 = $a_{31}/a_{11}$ = -2/2 = -1
+\end{itemize}
+
+Ora, per ogni riga sotto quella del pivot, eseguo la sottrazione della riga con quella del pivot moltiplicata per il moltiplicatore. In questo caso si esegue:
+\begin{itemize}
+\item \textbf{Per la riga 2 }: $\alpha_{2i}-(l_{21}*\alpha_{1i})$
+\item \textbf{Per la riga 3 }: $\alpha_{3i}-(l_{31}*\alpha_{1i})$
+\end{itemize}
+
+Dopo aver fatto ciò dovremmo ottenere una matrice
+$$ A^{(1)}
+\begin{bmatrix}
+2 & 1 & 3 \\
+0 & \fbox{1} & 4 \\
+0 & 2 & 10 
+\end{bmatrix}
+$$
+\noindent
+Non abbiamo ancora finito dato che A non è ancora triangolare superiore. 
+\\
+Si riesegue lo stesso procedimento di prima:
+\begin{itemize}
+\item Determino il pivot: 1 (posizione 2,2);
+\item Calcolo i moltiplicatori, in questo caso è solo uno
+	\begin{itemize}
+		\item $l_{32}$ =  moltiplicatore della riga 3 con la riga 2 = $a_{32}/a_{22}$
+	\end{itemize}
+\item eseguo la sottrazione della riga 3 con la riga 2 moltiplicata per il moltiplicatore: $\alpha_{3i}-(l_{32}*\alpha_{2i})$
+\end{itemize}
+
+\noindent
+Alla fine del procedimento otteniamo la matrice ridotta \textbf{U}
+$$ U =
+\begin{bmatrix}
+2 & 1 & 3 \\
+0 & 1 & 4 \\
+0 & 0 & 2 
+\end{bmatrix}
+$$
+\noindent
+e la matrice dei moltiplicatori \textbf{L}
+$$ L =
+\begin{bmatrix}
+1 & 0 & 0 \\
+2 & 1 & 0 \\
+-1 & 2 & 1 
+\end{bmatrix}
+$$
+
+\noindent
+Notate che che $l_{ij}$ corrisponde a dire "Moltiplicatore in riga \textbf{i} e colonna \textbf{j}".
+
+\subsubsection{Gauss con pivoting}
+\label{Gauss con pivoting}
+Il metodo di Gauss \textbf{con} pivoting è leggermente diverso da quanto visto prima. È più sicuro del metodo precedente dato che evita situazioni con pivot nullo.\\\\
+Cosa cambia da Gauss senza pivoting:
+\begin{itemize}
+\item È necessario effettuare un controllo prima di eseguire il calcolo del moltiplicatore che potrebbe portare ad uno scambio di righe;
+\item Viene inserita una nuova matrice P definita "Matrice di permutazione". È una matrice che, a partire dalla matrice identità, contenente tutti gli scambi effettuati durante l'applicazione del metodo in modo da interpretare il pivoting come un prodotto di matrici. La sua definizione è la seguente: $P = P_n x P_{n-1} x ... x P_1$  (zero scambi ne consegue che P = I = Matrice d'identità).
+\item La matrice finale non è più A = L x U ma \textbf{P x A = L x U}.
+\end{itemize}
+
+\noindent
+
+Prendiamo come esempio la seguente matrice
+
+$$ A =
+\begin{bmatrix}
+1 & 1 & 1 \\
+2 & -3 & -1 \\
+1 & 2 & -1 
+\end{bmatrix}
+$$
+
+\noindent
+Ora non si calcolano subito i moltiplicatori ma si determina il \textit{miglior pivot}. Per farlo si possono usare due tecniche di pivoting:
+\begin{itemize}
+\item \textbf{Pivoting parziale}: supponendo che \textbf{\textit{r$\geq$k }}
+$$ |a_{rk}| = \max_{\substack{k\leq i\leq n}} |a_{ik}|$$
+Quello che dice: il miglior pivot è l'elemento assoluto più alto della colonna K a partire dalla diagonale $a_{kk}$
+\item \textbf{Pivoting totale}: solo a titolo informativo, consiste nell'effettuare la ricerca del miglio pivot considerando anche le altre colonne. Data la sua difficoltà nella gestione della matrice, viene preferito il pivoting parziale.
+\end{itemize}
+
+Tornando all'esempio, al primo step si osserva la colonna 1 e il miglior pivot è $a_{21}$ = 2.
+Ora si effettua lo scambio della riga 1 con la riga 2 e si ottiene la seguente matrice
+
+$$ A =
+\begin{bmatrix}
+2 & -3 & -1 \\
+1 & 1 & 1 \\
+1 & 2 & -1 
+\end{bmatrix}
+$$
+
+Dato che abbiamo effettuato uno \textbf{scambio}, salviamolo in un "pezzo" della matrice di permutazione. Chiamiamolo $P_1$ che è uguale a 
+$$ P_1 =
+\begin{bmatrix}
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+0 & 0 & 1 
+\end{bmatrix}
+$$
+
+Se moltiplichiamo A con $P_1$ possiamo infatti notare che abbiamo ottenuto la stessa matrice.
+
+Da qua si calcolano i due moltiplicatori:
+\begin{itemize}
+\item \textbf{Per la riga 2 }:  $a_{21}/a_{11}$ = 1/2
+\item \textbf{Per la riga 3 }:  $a_{31}/a_{11}$ = 1/2
+\end{itemize}
+
+Si effettuano i calcoli e si ottiene:
+$$ A^{(1)} =
+\begin{bmatrix}
+2 & -3 & -1 \\
+0 & 5/2 & 1/2 \\
+0 & \fbox{7/2} & -3/2 
+\end{bmatrix}
+$$
+
+Al secondo step si osserva la colonna 2 e il miglior pivot è $a_{32}$ = 7/2. Si effettua un altro scambio tra righe, ottenendo la seguente matrice:
+$$ A^{(1)} =
+\begin{bmatrix}
+2 & -3 & -1 \\
+0 & 7/2 & -3/2 \\
+0 & 5/2 & 1/2 
+\end{bmatrix}
+$$
+
+e la seguente matrice di permutazione
+$$ P_2 =
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 0 & 1 \\
+0 & 1 & 0 
+\end{bmatrix}
+$$
+
+\textbf{NB}: anche se nella matrice originale A la seconda riga corrispondeva alla prima, a noi non ce ne frega niente dato che viene considerata sempre la nuova permutazione di A.
+\\ \\
+Calcoliamo il moltiplicatore:
+\begin{itemize}
+\item \textbf{Per la riga 3 }:  $a_{32}/a_{22}$ = 5/7
+\end{itemize}
+
+Otteniamo così 
+$$ U =
+\begin{bmatrix}
+2 & -3 & -1 \\
+0 & 7/2 & -3/2 \\
+0 & 0 & 16/7 
+\end{bmatrix}
+$$
+$$ L =
+\begin{bmatrix}
+1 & 0 & 0 \\
+1/2 & 1 & 0 \\
+1/2 & 5/7 & 1 
+\end{bmatrix}
+$$
+
+Per quanto riguarda P invece, si ottiene dalla moltiplicazione delle varie matrici di permutazione, in questo caso $P_2$ e $P_1$. Quindi P = \\
+\begin{center}
+$
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 0 & 1 \\
+0 & 1 & 0 
+\end{bmatrix}
+$
+x
+$
+\begin{bmatrix}
+0 & 1 & 0 \\
+1 & 0 & 0 \\
+0 & 0 & 1 
+\end{bmatrix}
+$
+=
+$
+\begin{bmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1 \\
+0 & 1 & 0 
+\end{bmatrix}
+$.
+\end{center}
+
+\textbf{NB PARTE 2}: se viene applicato il pivoting parziale dopo aver già determinato dei moltiplicatori, \underline{bisogna cambiare la posizione dei moltiplicatori} \underline{delle righe coinvolte}.\\\\
+\textbf{Esempio time}: abbiamo la seguente matrice:
+$$ A =
+\begin{bmatrix}
+4 & 3 & 10 \\
+2 & 1 & 3 \\
+-2 & 1 & 7
+\end{bmatrix}
+$$
+\noindent
+Dopo il primo step abbiamo la matrici:\\
+
+$$ A^{(1)} =
+\begin{bmatrix}
+4 & 3 & 10 \\
+0 & -1/2 & -2 \\
+0 & 5/2 & 12 
+\end{bmatrix}
+$$
+\noindent
+
+$$ L =
+\begin{bmatrix}
+1 & 0 & 0 \\
+1/2 & 1 & 0 \\
+- 1/2 & l_{32} & 1 
+\end{bmatrix}
+$$
+
+Allo step 2 notiamo che c'è da eseguire il pivoting parziale. Avendo coinvolto le righe 2 e 3 è necessario (prima di calcolare il moltiplicatore) scambiare \textbf{TUTTI} i moltiplicatori della riga 2 con quelli della riga 3. Otteniamo così: \\
+
+$$ A^{(2)} =
+\begin{bmatrix}
+4 & 3 & 10 \\
+0 & 5/2 & 12 \\
+0 & -1/2 & -2 
+\end{bmatrix}
+$$
+\noindent
+$$ L =
+\begin{bmatrix}
+1 & 0 & 0 \\
+- 1/2 & 1 & 1 \\
+1/2 & l_{32} & 0 
+\end{bmatrix}
+$$
+\noindent
+Il procedimento si è svolto anche nell'esempio precedente ma, essendo i due valori uguali, non si notava benissimo. \\
+Ora, perché $l_{32}$ non viene coinvolto? Non viene coinvolto perché $l_{32}$ fa \textit{già parte della nuova permutazione}.
+
+\subsection{Risoluzione dei sistemi}
+\label{Risoluzione dei sistemi}
+Dopo aver applicato le eliminazioni di Gauss (con o senza pivoting) non abbiamo ancora finito di risolvere i nostri sistemi lineari dato che abbiamo solo ottenuto una forma semplificata. Per risolvere i sistemi $Ax = b$ è necessario eseguire altri due step:
+\begin{itemize}
+\item \textbf{Se usato Gauss CON pivoting}: Dopo aver ottenuto i due sistemi triangolari U e L. Bisogna risolvere:
+\begin{enumerate}
+\item $L*y = P*b$
+\item $U*x = y$
+\end{enumerate}
+\item \textbf{Se usato Gauss SENZA pivoting}: Dopo aver ottenuto i due sistemi triangolari U e L. Bisogna risolvere:
+\begin{enumerate}
+\item $L*y = b$ (NB P = I)
+\item $U*x = y$
+\end{enumerate}
+\item \textbf{Se matrici aumentate multiple}: Partendo da una matrice aumentata multipla (A$\mid$b$_1$b$_2$...b$_n$), dopo aver applicato Gauss (con o senza pivoting) ed ottenuto (U$\mid$y$_1$y$_2$...y$_n$) basta risolvere gli n sistemi
+\begin{itemize}
+\item $U*x = y_1$
+\item $U*x = y_2$
+\item ...
+\item $U*x = y_n$
+\end{itemize}
+\end{itemize}
+\noindent
+
+\subsection{Calcolo dell'inversa}
+\label{Calcolo dell'inversa}
+Sia A una matrice invertibile, per calcolare l'inversa A$^{-1}$ seguite i seguenti step
+\begin{itemize}
+\item Partendo da A, uso Gauss (con o senza pivoting) per risolvere la matrice aumentata (A$\mid$I)
+\item Ottengo (U$\mid$Y) dove Y = L$^{-1}$ x P e P = I se ho fatto Gauss senza pivoting
+\item Dalla matrice aumentata (U$\mid$L$^{-1}$ x P), risolvo gli n sistemi triangolari ottenuti, dove n = numero delle colonne di Y.
+\end{itemize}
+\noindent
+
+\textbf{Esempio time}: dato (U$\mid$Y) =
+$$
+\begin{bmatrix}
+  -4 & 7 & 0 & \aug & 1 & 0 & 0 \\
+  0 & 5/2 & 7 & \aug &1/2 & 1 & 0 \\
+  0 & 0 & -2/5 & \aug & 1/2 & -1/5 & 1 
+\end{bmatrix}
+$$
+
+Devo risolvere questi 3 sistemi:
+\begin{center}
+$
+\begin{bmatrix}
+-4 & 7 & 0 \\
+0 & 5/2 & 7 \\
+0 & 0 & -2/5 
+\end{bmatrix}
+$
+x
+$
+\begin{bmatrix}
+a_{11} \\
+a_{12} \\
+a_{13} \\
+\end{bmatrix}
+$
+=
+$
+\begin{bmatrix}
+1 \\
+1/2 \\
+1/2 \\
+\end{bmatrix}
+$
+\end{center}
+
+
+\begin{center}
+$
+\begin{bmatrix}
+-4 & 7 & 0 \\
+0 & 5/2 & 7 \\
+0 & 0 & -2/5 
+\end{bmatrix}
+$
+x
+$
+\begin{bmatrix}
+a_{21} \\
+a_{22} \\
+a_{23} \\
+\end{bmatrix}
+$
+=
+$
+\begin{bmatrix}
+0 \\
+1 \\
+-1/5 \\
+\end{bmatrix}
+$
+\end{center}
+
+
+\begin{center}
+$
+\begin{bmatrix}
+-4 & 7 & 0 \\
+0 & 5/2 & 7 \\
+0 & 0 & -2/5 
+\end{bmatrix}
+$
+x
+$
+\begin{bmatrix}
+a_{31} \\
+a_{32} \\
+a_{33} \\
+\end{bmatrix}
+$
+=
+$
+\begin{bmatrix}
+0 \\
+0 \\
+1 \\
+\end{bmatrix}
+$
+\end{center}
+
+In questo modo ho calcolato i componenti della matrice $A^{-1}$
+
+\subsection{Metodo di Cholesky}
+\label{Metodo di Cholesky}
+Il metodo di Cholesky offre una semplificazione della matrice più veloce rispetto a quella di Gauss ma è applicabile solo se A è :
+\begin{itemize}
+\item \textbf{simmetrica}: $A = A^T$
+\item \textbf{definita positiva}: $x^T A x > 0$ 
+\end{itemize}
+\noindent
+I valori si calcolano direttamente con le seguenti formule:
+\begin{itemize}
+\item $l_{11}$ = $\sqrt[2]{a_{11}}$ \quad \quad \quad \textit{Primo elemento di L}
+\item $l_{i1}$ = $a_{i1}/ l_{11} $ \quad \quad \textit{Elementi della prima riga di L con $i = 1\dots n$}
+\item $l_{jj}$ = \textit{Elementi diagonali della diagonale L}, si ottengono con la seguente formula (j = $2\dots n$) $$(a - \sum_{k=1}^{j-1} l^2_{jk})^{1/2}$$ 
+\item $l_{ij}$ = \textit{Resto degli elementi}, si ottengono con la seguente formula (j = $2\dots n$ e i = $j+1\dots n$) $$(a_ij-\sum_{k=1}^{j-1}l_ik*l_jk)/l_{jj}$$
+\end{itemize}
+Applicato questo metodo si ottiene una semplificazione $A = L * L^T$.
+\\
+Per risolvere il sistema ottenuto bisogna calcolare:
+\begin{itemize}
+\item L y = b
+\item L$^T$ x = y
+\end{itemize}
+
+\subsection{Determinante}
+\label{Determinante}
+Il determinante si calcola in modi diversi a seconda del metodo utilizzato:
+\begin{itemize}
+\item \textbf{Gauss}: $$det(A) = (-1)^s * \prod_{i=1}^{n} a^{(i-1)}_{ii}$$ dove s indica il numero di permutazioni eseguite. In sostanza \\$det(A) = 1^{permutazioni} *$ \textit{moltiplicazione degli elementi diagonali di U}
+\item \textbf{Cholesky}: $$det(A) = \prod_{i=1}^{n} l^2_{ii}$$ In sostanza $det(A) =$ \textit{moltiplicazione degli elementi diagonali di L al quadrato}
+\end{itemize}
+

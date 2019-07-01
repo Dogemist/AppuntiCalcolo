@@ -1,0 +1,167 @@
+\section{Matrici (Metodi di rilassamento classici)}
+\label{Matrici (Metodi di rilassamento classici)}
+
+Il concetto dei metodi di rilassamento si basa sulla \textit{decomposizione} di A nella seguente forma: $$A = M - N$$
+\noindent Il sistema può essere scritto come $$Mx = Nx + b$$ e partendo da un $x_0$ vettore arbitrario, è possibile costruire le relative iterazioni
+$$Mx_{k+1} = Nx_k + b$$
+I metodi di rilassamento classici costruiscono M e N basandosi sulle seguenti 3 matrici:\\
+\noindent una matrice diagonale costruita con gli elementi diagonali di A
+ $$D = 
+\begin{bmatrix}
+a_{11} & 0 & 0 \\
+0 & \dots &  0\\
+0 & 0 & a_{nn} 
+\end{bmatrix}
+$$
+
+una matrice triangolare inferiore costruita con gli elementi inferiori alla diagonale di A, tutto il resto zero
+
+$$ -E =
+\begin{bmatrix}
+0 & & & &\\
+a_{21} & 0 & & & \\
+\dots  & \dots & \ddots & \\
+\dots  &  \dots & \dots & \ddots \\
+a_{n1} & \dots & \dots & a_{n,n-1} & 0 
+\end{bmatrix}
+$$
+
+ed infine una matrice triangolare superiore costruita con gli elementi superiori alla diagonale di A, tutto il resto zero
+
+$$ -F =
+\begin{bmatrix}
+0 & a_{12} & \dots & \dots & a_{1n} \\
+ & 0 & \ddots &  & \dots \\
+ &  & \ddots & \ddots  & \dots\\
+ &  &  & \ddots & a_{n-1,n}\\
+ &  &  &  & 0
+\end{bmatrix}
+$$
+
+Otteniamo in questo modo $A = D-E-F$
+\\ \\
+Inoltre, ogni metodo ha una sua particolare matrice d'iterazione.
+
+\subsection{Metodo Jacobi}
+\label{Metodo Jacobi}
+Con questo metodo, le matrici M e N sono definite nel seguente modo:
+\begin{itemize}
+\item $M = D$
+\item $N = E + F$ Prestate attenzione che i valori delle matrici E ed F di default sono \textbf{Negativi} (-E e -F).
+\end{itemize}
+
+Dopo aver determinato M e N si può calcolare la matrice di iterazione $B_j$. Questa può essere calcolata in due modi:
+\subsubsection{Calcolo diretto}
+$$B_J =
+\begin{bmatrix}
+0 & -\frac{a_{12}}{a_{11}} & \dots & \dots & -\frac{a_{1n}}{a_{11}} \\
+-\frac{a_{21}}{a_{22}} & 0 &  \ddots & & \vdots \\
+\vdots & \ddots & \ddots & \ddots & \vdots \\
+-\frac{a_{n1}}{a_{nn}} & \dots & \dots & -\frac{a_{n,n-1}}{a_{nn}} & 0
+\end{bmatrix}
+$$
+
+\subsubsection{Calcolo con D,E,F}
+\label{Calcolo con D,E,F}
+$$ \boldsymbol{B_J} = M^{-1}*N = \boldsymbol{D^{-1}*(E+F)} $$
+dove  $$D^{-1} = 
+\begin{bmatrix}
+\frac{1}{a_{11}} & 0 & 0 \\
+0 & \dots &  0\\
+0 & 0 & \frac{1}{a_{nn}}
+\end{bmatrix}
+$$
+
+\subsubsection{Calcolo dell'iterata successiva}
+\label{Calcolo dell'iterata successiva}
+Per calcolare $x_{k+1}$ a partire da un $x_k$ arbitrario, basta eseguire il seguente conto $$x_{k+1} = B_J * x_k + q$$
+dove $q = D^{-1}*b$
+
+\subsection{Metodo Gauss-Seidel}
+\label{Metodo Gauss-Seidel}
+Con questo metodo, le matrici M e N sono definite nel seguente modo:
+\begin{itemize}
+\item $M = D - E$
+\item $N = F$
+\end{itemize}
+
+In questo caso per calcolare la matrice d'iterazione c'è solo un modo: 
+$$B_G = M^{-1}*N = (D-E)^{-1}*F $$
+\noindent
+\textbf{PRO TIP}: per calcolare l'inversa di M in questo caso si può usare il metodo descritto sul paragrafo \ref{Calcolo dell'inversa} ma essendo lungo ed a tratti macchinoso può portare ad errori. Fortunatamente, essendo una triangolare, è possibile sfruttare questo trick:
+\\
+\\
+\noindent
+Una proprietà della matrice identità è che, data una matrice A, $A^{-1}A = I$.
+Prendendo in questo caso $(D-E) =
+\begin{bmatrix}
+1/2 & 1 & 0 \\
+-2 & 3 & 0 \\
+1 & -1 & 1 
+\end{bmatrix}
+$ 
+\\ \\ \\
+\noindent
+Abbiamo che $(D-E)^{-1}*(D-E) = I$
+\begin{center}
+$
+\begin{bmatrix}
+2 & 0 & 0 \\
+a & 1/3 & 0 \\
+b & c & 1 
+\end{bmatrix}
+$
+x
+$
+\begin{bmatrix}
+1/2 & 1 & 0 \\
+-2 & 3 & 0 \\
+1 & -1 & 1 
+\end{bmatrix}
+$
+=
+$
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+$
+\end{center}
+\noindent
+Moltiplico le due matrici ed ottengo: \\
+\begin{center}
+$
+\begin{bmatrix}
+1 & 0 & 0 \\
+a/2 - 2/3 & 1 & 0 \\
+b/2 - 2c+1 & 3c+1 & 1 
+\end{bmatrix}
+$
+=
+$
+\begin{bmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+$
+\end{center}
+\noindent
+Come si può notare, ora basta solo far corrispondere gli spazi con le incognite ai relativi valori (in questo caso 0). Per risolvere questo basta risolvere il seguente sistema:
+$$\left\{
+  \begin{array}{lr}
+    a/2 -2/3 = 0 \\
+    b/2 -2c+1 = 0 \\
+    3c+1 = 0 
+  \end{array}
+\right.
+$$
+
+Ossia rendere $a_{21} = I_{21} $ , $a_{31} = I_{31}  $, $a_{32} = I_{32} $, alla fine sostituiamo i valori di $a,b$ e $c$ nelle rispettive posizioni ed è fatta.
+\\ \\
+\noindent
+\subsubsection{Calcolo dell'iterata successiva gauss-seidel}
+\label{Calcolo dell'iterata successiva gauss-seidel}
+Per calcolare $x_{k+1}$ a partire da un $x_k$ arbitrario, basta eseguire il seguente conto $$x_{k+1} = B_G * x_k + q$$
+dove $q = (D-E)^{-1}*b$

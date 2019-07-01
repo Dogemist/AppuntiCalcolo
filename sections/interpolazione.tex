@@ -1,0 +1,387 @@
+\section{Interpolazione}
+\label{Interpolazione}
+Rientra nelle approssimazione di funzioni (ridurre $f(x)$ in una $g(x)$ più semplice). L'interpolazione consiste nell'approssimare una funzione e che passi per gli stessi punti della funzione originale.
+\\
+\\
+In questo capitolo viene trattata \textbf{l'interpolazione polinomiale}: data una funzione $f(x)$ nella quale:
+\begin{itemize}
+\item siano noti $n+1$ punti (o nodi) $x_i$ distinti;
+\item sia $f(x_i)$ ($i=0\dots n)$ i valori assunti dalla funzione nei punti dati
+\item esista un indice $0\leq k\leq n$ tale che $f(k)\neq 0$ 
+\end{itemize}
+Allora esiste un polinomio $P_n(x_i) = f(x_i)$
+
+\subsection{Forma di Lagrange}
+\label{Forma di Lagrange}
+Non ha vincoli nell'utilizzo. Per trovare il polinomio interpolatore $P_n(x)$ è necessario eseguire i seguenti step:
+\begin{itemize}
+\item Determinazione polinomio caratteristico di Lagrange  $$L^(n)_i(x) = \prod_{\substack{j=0 \\ j\neq i}}^{n} \frac{x-x_i}{x_i-x_j}$$
+\item Determinazione polinomio interpolatore $$P_n(x)=\sum_{i=0}^{n}f(x_i)*L_i^n(x)$$
+\end{itemize}
+\noindent
+\newpage
+Per fare un esempio: siano noti 
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c c c c }
+$x_i$ & -2 & 0 & 1 & 2 \\
+\hline
+$f(x_i)$ & 4 & 10 & 10 & 16
+\end{tabular}
+\caption{Tabella nodi iniziali}
+\end{table}
+
+
+\noindent quindi n = 3.
+\\\\
+Il polinomio d'interpolazione si trova quindi in questo modo: $$P_3(x) = f(x_0)*L^{(3)}_0  + f(x_1)*L^{(3)}_1 + f(x_2)*L^{(3)}_2 + f(x_3)*L^{(3)}_3$$
+
+Ovviamente noi di base non sappiamo i valori reali dei vari $L^{(3)}$ dobbiamo prima calcolarceli:
+\begin{itemize}
+\item $L^{(3)}_0 = \frac{x-0}{-2+0} * \frac{x-1}{-2-1} * \frac{x-2}{-2-2}$ 
+\item $L^{(3)}_1 = \frac{x+2}{0+2} * \frac{x-1}{0-1} * \frac{x-2}{0-2}$
+\item $L^{(3)}_2 = \frac{x+2}{1+2} * \frac{x+0}{1+0} * \frac{x-2}{1-2}$
+\item $L^{(3)}_3 = \frac{x+2}{2+2} * \frac{x+0}{2+0} * \frac{x-1}{2-1}$
+\end{itemize}
+\noindent
+Una volta risolti i conti basta eseguire il conto precedente e si ottiene il seguente polinomio $$P_3(x) = x^3-x+10$$
+
+\subsection{Forma di Nevile-Aitken}
+\label{Forma di Nevile-Aitken}
+Per utilizzare Nevile-Aitken non sono necessarie particolari condizioni.\\
+La forma del polinomio interpolatore è la seguente: $$P_n(x) = T_n^{(0)}(x)$$
+Per determinare il $T_n^{(0)}$ sono necessarie queste due formule:
+\begin{itemize}
+\item $T_0^{(i)} = f(x_i)$
+\item $T_{k+1}^{(i)} = T_k^{(i+1)}(x) - \frac{x_{i+k+1}-x}{x_{i+k+1}-x_i} * (T_k^{(i+1)}(x) - T_k^{(i)}(x))$
+\end{itemize}
+\newpage
+\textbf{Esempio time}: siano noti i seguenti nodi
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c c c }
+$x_i$ & 0.1 & 0.2 & 0.4 \\
+\hline
+$f(x_i)$ & 2 & 1 & 0.5
+\end{tabular}
+\caption{Tabella nodi iniziali}
+\end{table}
+
+
+Per facilitare la comprensione: dato $T_k^{(i)}$, k indica la colonna ed i indica il nodo interpolato
+La tabella di risoluzione è con il metodo di Nevile-Aitken:
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+$x_i$ & $T_0^{(i)}$ & $T_1^{(i)}$ & $T_2^{(i)}$ \\ 
+\hline
+0.1 & 2 & $3-10x$ & $25x^2-17.5+3.5$ \\
+& & & \\
+0.2 & 1 & $1.5-2.5x$& / \\
+& & & \\
+0.4 & 0.5 & / & /
+\end{tabular}
+\caption{Tabella esecuzione Nevile-Aitken}
+\end{table}
+
+Alla fine di tutto $\boldsymbol{P_2(x) = 25x^2-17.5+3.5}$
+\\ \\ 
+Il procedimento si svolge colonna per colonna, calcolando prima la colonna k = 0, poi la colonna k = 1 ed infine la colonna k = 2 e dall'alto verso in basso. Si nota, ad esempio, che le parti di $T_1^(0)$ Necessita di $T_0^{(1)}$
+
+\subsection{Formule di Newton}
+\label{Formule di Newton}
+Con le interpolazioni, Newton ha più formule a disposizione. Quelle che interessano a noi sono principalmente due: \textbf{Newton alle differenze divise} e \textbf{Newton alle differenze finite in avanti}.
+\\
+\\
+\noindent Tutte queste formule portano (in un modo o nell'altro e con scritture diverse) al seguente polinomio interpolatore: $$P_n(x) = c_0 + \sum_{i=0}^{n} c_i \prod_{j=0}^{i-1}(x-x_j)$$
+
+Le cose che cambiano da una formula all'altra è il modo in cui vengono scritti i coefficienti $c_i$
+
+\subsubsection{Formula di Newton alle differenze divise}
+\label{Formula di Newton alle differenze divise}
+In questo caso $c_0$ dipende solo da $f(x_0)$, il coefficiente $c_1 da f(x_0) e f(x_1)$ e cosi via fino a $c_n$ che dipende da $f(x_0),f(x_1)\dots f(x_n)$.
+\\ \\
+In sostanza, si dice che $c_n = f[x_0,x_1,\dots ,x_n]$
+e prende il nome di \textit{differenza divisa di f}. \\ \\
+\noindent Queste differenze si basano su ordini dove \textit{Ordine n} e vengono indicate in questo modo:
+\begin{itemize}
+\item \textbf{Ordine 0}: $f[x_i] = f(x_i)$
+\item \textbf{Ordine 1}: $f[x_i,x_j] = \dfrac{f[x_i] - f[x_j]}{x_i-x_j}$
+\item \textbf{Ordine 2} $f[x_i,x_j,x_k] = \dfrac{f[x_i,x_j] - f[x_j,x_k]}{x_i-x_k}$
+\item \textbf{Ordine n}: $f[x_0,\dots ,x_n] = \dfrac{f[x_0,\dots ,x_{n-1}] - f[x_1,x_n]}{x_0-x_n}$
+\end{itemize}
+
+Alla fine di tutto, il nostro polinomio interpolatore è  $$P_n(x) = f(x_0) + \sum_{i=0}^{n} f[x_0,\dots ,x_i] \prod_{j=0}^{i-1}(x-x_j)$$
+
+\textbf{Esempio time}: siano noti i seguenti nodi
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c c c c}
+$x_i$ & 3 & -2 & -1 & 2 \\
+\hline
+$f(x_i)$ & 4 & -2 & -1 & 2 
+\end{tabular}
+\caption{Tabella nodi iniziali}
+\end{table}
+
+Per risolvere il seguente esempio con Newton alle differenze divise si può ricorrere alla solita tabella
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+$x_i$ & $f[x_i] = f(x_i)$ & $f[x_i,x_{i+1}]$ & $f[x_i,x_{i+1},x_{i+2}]$ & $f[x_i,x_{i+1},x_{i+2},x_{i+3}]$\\ 
+\hline
+3 & 4 & 6/5 & 1/20 & 1/20 \\
+& & & & \\
+-2 & -2 & 1 & 0 & / \\
+& & & &\\
+-1 & -1 & 1 & / & / \\
+& & & &\\
+2 & 2 & / & / & /
+\end{tabular}
+\caption{Tabella esecuzione Newton differenze divise}
+\end{table}
+\newpage
+Alla fine di tutto scrivo la formula del polinomio: $$P_3 = 4 + \dfrac{6}{5}*(x-3)+\dfrac{1}{20}*(x-3)(x-2)+\dfrac{1}{20}(x-3)(x+2)(x+1)$$ il quale risulta $$P_3(x) = \dfrac{1}{20}x^3 + \dfrac{1}{20}x^2+\dfrac{4}{5}x-\dfrac{1}{5}$$
+
+Nel caso venga aggiunto un nuovo nodo, il nuovo polinomio diventerebbe: $$P_{n+1} = P_n(x) + f[x_0,\dots ,x_{n+1}]\prod_{j=0}{n}(x-x_j)$$ ossia il vecchio polinomio più la nuova differenza divisa. Ovviamente bisogna rifare alcuni conti sulla tabella di esecuzione. In particolare, se eseguita, si noterà che i conti che non riguardano il nuovo nodo aggiunto \textbf{saranno uguali}.
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+$x_i$ & $f[x_i] = f(x_i)$ & $f[x_i,x_{i+1}]$ & $f[x_i,x_{i+1},x_{i+2}]$ & $f[x_i,x_{i+1},x_{i+2},x_{i+3}]$ &$f[x_i,\dots ,x_{i+4}]$\\ 
+\hline
+3 & 4 & 6/5 & 1/20 & 1/20 & \textbf{4/15} \\
+& & & & &\\
+-2 & -2 & 1 & 0 & \textbf{-3/4} & /\\
+& & & & &\\
+-1 & -1 & 1 & \textbf{-3/2} & / & / \\
+& & & & &\\
+2 & 2 & \textbf{-1/2 }& / & / & / \\
+& & & & & \\
+0 & \textbf{3} & / & / & / & / 
+\end{tabular}
+\caption{Tabella esecuzione con nuovo nodo, valori in grassetto = valori diversi}
+\end{table}
+
+\newpage
+
+\subsubsection{Formula di Newton alle differenze divise in avanti}
+\label{Formula di Newton alle differenze divise in avanti}
+Al contrario delle differenze divise, ci sono due vincoli che devono essere rispettati per usare questa formula:
+\begin{itemize}
+\item I nodi siano \textbf{ordinati} in senso crescente
+\item I nodi siano \textbf{equidistanti}
+\end{itemize}
+Se sono equidistanti, allora abbiamo $x_i = x_0 +i*h$
+\\ \\
+\textbf{NB}: nel caso vi venga chiesto se per i nodi \{0, -1, -2\} è possibile applicare Newton con le differenze in avanti, la risposta è \textbf{può essere applicato se vengono riordinati nel seguente modo \{-2,-1, 0\} perché sono equidistanti ma non ordinati}
+\\ \\
+\noindent
+Il nostro polinomio interpolatore è  $$P_n(x) = f(x_0) + \sum_{i=0}^{n} \dfrac{1}{i!*h^i}\Delta ^if(x_0)\prod_{j=0}^{i-1}(x-x_j)$$
+\noindent
+Formula per determinare i delta $$\Delta ^kf(x) = \Delta ^{k-1}f(x+h) - \Delta ^{k-1}f(x)$$
+dove $\Delta ^0f(x_i)=f(x_i)$
+\newpage
+\textbf{Esempio Time}: siano dati i seguenti nodi con le rispettive immagini
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c c c}
+$x_i$ & 0 & 1 & 2 \\
+\hline
+$f(x_i)$ & 0 & 1 & 3 
+\end{tabular}
+\caption{Tabella nodi iniziali equidistanti e ordinati (h = 1)}
+\end{table}
+
+La tabella delle differenze in avanti è la seguente
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|}
+$x_i$ & $\Delta ^0f(x_i) = f(x_i)$ & $\Delta ^1f(x_i) =\Delta ^0f(x_i+h) - \Delta ^0f(x_i) $ & $\Delta ^2f(x_i) =\Delta ^1f(x_i+h) - \Delta ^1(x_i)$ \\ 
+\hline
+0 & 0 & $\Delta ^1f(0) =\Delta ^0f(1) - \Delta ^0f(0)$ = 1 & $\Delta ^2f(0) =\Delta ^1f(0+1) - \Delta ^1(0)$ 2 \\
+& & &\\
+1 & 1 & $\Delta ^1f(x_i) =\Delta ^0f(2) - \Delta ^0f(1)$ = 2 & / \\
+& & & \\
+2 & 3 & / & / \\
+\end{tabular}
+\caption{Tabella esecuzione Newton alle differenze in avanti}
+\end{table}
+
+Alla fine di tutto $$P_2(x) = 0 + \dfrac{1}{1!1^1}*1*(x-0)+\dfrac{1}{2!1^2}*1(x-0)(x-1)$$
+e $$\boldsymbol{P_2(x) = \dfrac{x^2+x}{2}}$$
+
+Nel caso si volesse aggiungere un nuovo nodo, la soluzione è simile a quella precedente se non per i valori dei \textit{coefficienti} $$P_{n+1}(x) = P_n+\dfrac{1}{(n+1)!h^{n+1}}\Delta^{n+1}f(x_0)\prod_{j=0}^{n}(x-x_j)$$
+E sempre come prima, si ricalcolano i valori con il nuovo nodo aggiunto. \\
+\textbf{NB} Controllare sempre che il valore che si voglia aggiungere sia \textit{equidistante} ed inserito in modo \textit{ordinato} rispetto ai nodi presenti.
+
+\subsection{Approssimazione ai minimi quadrati}
+\label{Approssimazione ai minimi quadrati}
+Usata principalmente quando i dati sono sperimentali e l'adozione di uno dei metodi precedenti potrebbe dare un risultati che non hanno un elevato grado di esattezza.
+\\
+\\
+Dati i punti ed il loro peso $w$, ci si può ricondurre alla funzione $f(x)$ attraverso l'uso delle matrici determinando il valore dei coefficienti $a$ delle variabili $x$. In particolare, si tratta di risolvere il seguente sistema $$A^TA\boldsymbol{a}=A^Tb$$
+\\ \\
+\noindent \textbf{Esempio time} dati i seguenti punti con i loro relativi pesi:
+\textbf{Esempio Time}: siano dati i seguenti nodi con le rispettive immagini
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c c c c c}
+$x_i$ & 0 & 1/2 & 1 & 3/2 & 2 \\
+\hline
+$f(x_i)$ & 0 & 1/2 & 1 & 0 & -1  \\
+\hline
+$\omega$ & 1 & 16 & 1 & 16 & 1
+\end{tabular}
+\caption{Tabella nodi iniziali con i pesi}
+\end{table}
+
+I quali posso vederli sotto forma di vettore riga:
+
+$$x = 
+\begin{bmatrix}
+0 & 1/2 & 1 & 3/2 & 2
+\end{bmatrix}
+$$
+
+$$y = 
+\begin{bmatrix}
+0 & 1/2 & 1 & 0 & -1
+\end{bmatrix}
+$$
+
+$$\omega = 
+\begin{bmatrix}
+1 & 16 & 1 & 16 & 1
+\end{bmatrix}
+$$
+
+Gli step per calcolare il tutto sono i seguenti:
+\begin{itemize}
+\item Definisco la matrice $A$ nel seguente modo
+$$ A =
+\begin{bmatrix}
+\sqrt[2]{w_0} & \sqrt[2]{w_0}*x_0 & \sqrt[2]{w_0}*x_0 &\\
+\vdots & \vdots & \vdots \\
+\vdots  & \vdots & \vdots & \\
+\sqrt[2]{w_m} & \sqrt[2]{w_m}*x_m & \sqrt[2]{w_m}*x_m & \\
+\end{bmatrix}
+$$
+\item Definisco la matrice $b$ nel seguente modo:
+$$ b =
+\begin{bmatrix}
+\sqrt[2]{w_0}*f(x_0) \\
+\vdots \\
+\vdots  \\
+\sqrt[2]{w_m}*f(x_m) \\
+\end{bmatrix}
+$$
+\item Eseguo le moltiplicazioni $A^TA$ e $A^Tb$
+\item (Eventualmente) Semplifico il sistema trovato dalle due moltiplicazioni con Gauss o simili
+\item Determino i valori dei coefficienti $a$
+\end{itemize}
+\noindent
+Tornando all'esempio: \\ 
+\begin{center}
+
+$ A = \begin{bmatrix}
+1 & 0 & 0 \\
+4 & 2 & 1 \\
+1 & 1 & 1 \\
+4 & 6 & 9 \\
+1 & 2 & 1 \\
+\end{bmatrix}
+$
+\hbox{}
+$ b = \begin{bmatrix}
+0 \\ 2 \\ 1 \\ 0 \\ -1
+\end{bmatrix}
+$
+\end{center}
+\noindent Calcoliamo ora i due sistemi: \\
+\begin{center}
+$ A^TA = \begin{bmatrix}
+1 & 4 & 1 & 4 & 1 \\
+0 & 2 & 1 & 6 & 2 \\
+0 & 1 & 1 & 9 & 4   
+\end{bmatrix} $
+x
+$\begin{bmatrix}
+1 & 0 & 0 \\
+4 & 2 & 1 \\
+1 & 1 & 1 \\
+4 & 6 & 9 \\
+1 & 2 & 1 \\
+\end{bmatrix}
+$
+=
+$\begin{bmatrix}
+35 & 35 & 45 \\
+35 & 45 & 65 \\
+45 & 65 & 99 
+\end{bmatrix}
+$
+\end{center}
+
+\begin{center}
+$ A^Tb = \begin{bmatrix}
+1 & 4 & 1 & 4 & 1 \\
+0 & 2 & 1 & 6 & 2 \\
+0 & 1 & 1 & 9 & 4   
+\end{bmatrix} $
+x
+$ \begin{bmatrix}
+0 \\ 2 \\ 1 \\ 0 \\ -1
+\end{bmatrix}
+$
+=
+$ \begin{bmatrix}
+8 \\ 3 \\ -1
+\end{bmatrix}$
+\end{center}
+
+\newpage
+Ora posso calcolare i nuovi valori dei coefficienti $a$ risolvendo
+
+\begin{center}
+$\begin{bmatrix}
+35 & 35 & 45 \\
+35 & 45 & 65 \\
+45 & 65 & 99 
+\end{bmatrix}
+$
+x
+$\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix}
+$
+=
+$ \begin{bmatrix}
+8 \\ 3 \\ -1
+\end{bmatrix}
+$
+\end{center}
+
+Risolvo usando la matrice aumentata (A$\mid$b) e, dopo aver usato Gauss, ottengo
+$$\begin{bmatrix}
+35 & 35 & 45 & \aug & 8\\
+0 & 10 & 20 &\aug & -5\\
+0 & 0 & 8/7 &\aug & -9/7
+\end{bmatrix}
+$$
+
+A questo punto si risolve il sistema
+$$\left\{
+  \begin{array}{lr}
+    35a_1 + 35a_2 + 45a_3 = 8 \\
+    10a_2 + 20a_3 = -5 \\
+    8a_3/7 = -9/7 
+  \end{array}
+\right.
+$$
+
+Il polinomio finale è $\boldsymbol{g(x) = a_1 + a_2x * a_3x^2}$ sostituendo ai rispettivi coefficienti i valori trovati nel sistema
+

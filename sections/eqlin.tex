@@ -1,0 +1,148 @@
+\section{Equazioni Lineari}
+\label{Equazioni Lineari}
+
+Metodi per ottenere l'approssimazione di equazioni non lineari. In particolare consiste nel determinare
+\begin{itemize}
+	\item Gli zeri (o radici) della funzione $f(x) = 0$
+	\item I valori (o Punti fissi) della funzione $x = g(x)$
+\end{itemize}
+
+\subsection{Interpretazione grafica}
+\label{Interpretazione grafica}
+Utile per individuare se e (in caso affermativo) dove ci sono le soluzioni.
+Diversi dei metodi che verranno utilizzati richiederanno la conoscenza di un intervallo $[a,b]$ che contenga una soluzione \textbf{reale} ed \textbf{unica}.
+\\ \\
+L'interpretazione grafica ci aiuta molto in questo caso, per rappresentare solitamente "basta" disegnare le funzioni in questo modo:
+\\ \\
+$\left\{
+  \begin{array}{lr}
+    y=f(x) \\
+    y=0
+  \end{array}
+\right.$
+\\
+Se la funzione è f(x), le soluzioni sono uguali alle intersezioni di f(x) con l'asse delle x
+\\ \\ \\
+$\left\{
+  \begin{array}{lr}
+    y=g(x) \\
+    y=x
+  \end{array}
+\right.$
+\\
+Se la funzione è x=g(x), le soluzioni sono uguali alle intersezioni tra le due funzioni
+
+\newpage
+
+\subsection{Bisezione}
+\label{Bisezione}
+Consiste, partendo da un intervallo, nel dividere di volta in volta a metà l'intervallo di partenza fino a quando non si raggiunge un intervallo piccolissimo che è sempre più vicino alla soluzione x.
+\\ \\
+\textbf{Esempio Time}: data la funzione $$f(x)=3x - cos(x)$$ 
+inizio a determinare graficamente le soluzioni attraverso il seguente sistema:
+\\ \\
+$\left\{
+  \begin{array}{lr}
+    y=cos(x) \\
+    y=3x
+  \end{array}
+\right.$
+NB, abbiamo trasformato $f(x)=0$ in $x=g(x)$
+\\ \\
+Dopo aver trovato le soluzioni, ne determino degli intervalli (ragionevolmente piccoli). Supponiamo che la soluzione $\alpha$ sia contenuta all'interno dell'intervallo $[0;0,5]$ (dal grafico sappiamo dov'è ma non sappiamo il relativo valore), iniziamo ad eseguire i seguenti step:
+\begin{enumerate}
+\item Trovo il punto medio delle due tabelle $x_i$;
+\item Calcolo l'immagine del relativo punto $f(x_i)$
+\item Calcolo la \textit{\textbf{toll}}, tolleranza facendo $\mid b_i-a_i\mid$
+\item Assegno il valore $x_i$ ad \textit{a} o \textit{b} in base a questo modo:
+\begin{itemize}
+\item se $f(a_i) * f(x_i) < 0$ allora $b_{i+1} = x_i$ mentre \textit{a} resta invariato  
+\item se  $f(a_i) * f(x_i) > 0$ allora $a_{i+1} = x_i$ mentre \textit{b} resta invariato  
+\end{itemize}
+\end{enumerate}
+
+
+\newpage
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|}
+$i$ & $a_i$ & $b_i$ & $x_i$ & $f(x_i)$ & $\mid b_i-a_i \mid$ \\ 
+\hline
+0 & 0 (-) & 0.5 (+) & 0.25  & -0,218912421 & 0.5000 \\
+& & & & &\\
+1 & 0.25 (-) & 0.5 (+) & 0.375  &  0.194492378 & 0.2500 \\
+& & & & &\\
+2 & 0.25 (-) & 0.375 (+) & 0.3125 & -0.01467948 & 0,1250 \\
+& & & & & \\
+3 & 0.3125 (-) & 0.0375 (+) & 0.34375 & 0.089752536 & 0.0625
+\end{tabular}
+\caption{Tabella esecuzione Bisezione}
+\end{table}
+
+
+\noindent
+Per semplificare la tabella, vicino al punto $a_i$ e $b_i$ è stato inserito un + o - tra parentesi. Questo indica se la rispettiva immagine ( $f(a_i)$ e $f(b_i)$) è positiva o negativa. Questo aiuta a semplificare il controllo con $f(x_i)$
+
+\newpage
+
+\subsection{Metodo di Newton}
+\label{Metodo di Newton}
+ La formula per calcolare l'iterata successiva è la seguente:
+$$x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}$$
+
+\textbf{Esempio time}: Sia $f(x)=sin(x)+x-\pi$ e $x_0$=2 come valore di partenza, si determini una soluzione approssimata $x_3$.
+\\
+\\
+Sappiamo che $f'(x)=cos(x)+1$
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+$n$ & $x_n$ & $f(x_n)$ & $f'(x_n)$ &$-f(x_n)/f'(x_n)$ \\ 
+\hline
+0 & 2 & -0.232295226 & 0.583853163 & 0.397865834\\
+& & & &\\
+1 & 2.397865834 & -0.06691458 & 0.26409513 & 0.252571789 \\
+& & & &\\
+2 & 2.650437619 & -0.019510336 & 0.118211319 & 0.165046259 \\
+& & & & \\
+3 & 2.81548387 & / & / & /
+\end{tabular}
+\end{table}
+\noindent
+I test d'arresto per questo metodo sono:
+\begin{itemize}
+\item Una tolleranza \textbf{toll} tale che $\mid x_{n+1}-x_n \mid$ <toll
+\item Numero massimo di iterazioni \textit{n}
+\end{itemize}
+
+\pagebreak
+
+\subsection{Metodo della secante}
+\label{Metodo della secante}
+Metodo da utilizzare se $f'(x)$ non è disponibile oppure il metodo di Newton non può essere utilizzato. La formula per calcolare l'iterata successiva è la seguente:
+$$x_{n+1}=x_n-f(x_n)*\frac{x_n-x_{(n-1)}}{f(x_n)-f(x_{n-1})}$$
+\\ 
+\textbf{Esempio Time}: prendiamo come funzione di partenza $f(x)=4cos(x/2)-3,5-x$ nell'intervallo $I=[0;1]$. I punti di partenza $x_0$ e $x_1$ corrispondono agli estremi degli intervalli.
+
+\begin{center}
+\begin{table}[h!]
+\begin{tabular}{|c|c|c|c|c|c|}
+
+$n$ & $x_n$ & $f(x_n)$ & $f(x_n)-f(x_{n-1})$ &$x_n-x_{n-1}$ & $x_{n+1}-x_n$ \\ 
+\hline
+0 & 0 & 0,5 & / & / & 1\\
+& & & & &\\
+1 & 1 & -0,98966975243 & -1,489669752 & 1 & -0.664355136 \\
+& & & & &\\
+2 & 0,335644863 & 0.108158481 & ... & ... & ...
+\end{tabular}
+\caption{Tabella esecuzione Seccante}
+\end{table}
+\end{center}
+
+I test d'arresto sono come quelli di Newton:
+\begin{itemize}
+\item Tolleranza \textbf{toll}
+\item Numero massimo di iterazioni
+\end{itemize}

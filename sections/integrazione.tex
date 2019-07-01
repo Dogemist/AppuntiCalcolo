@@ -1,0 +1,28 @@
+\section{Integrazione numerica}
+\label{Integrazione numerica}
+Metodi per l'approssimazione di un'integrale definito. Usati quando l'integrale non è determinabile per via analitica o quanto l'espressione è troppo complessa e soggetta a notevoli errori.
+\\
+\\
+\noindent
+Le formule che saranno utilizzate vengono definite \textit{composte} per il fatto che l'intervallo [a,b] viene suddiviso in m intervalli (non necessariamente uguali).
+\subsection{Formula di trapezi composta}
+\label{Formula di trapezi composta}
+Dato un integrale $$\int_{a}^{b} f(x) dx$$ 
+e posti gli intervalli uguali, calcoliamo $h = (b-a)/m$
+\\
+La formula di trapezi composta è la seguente $$\dfrac{h}{2} *[f(a) + 2 \sum_{i=1}^{m-1}f(a+ih) + f(b)]$$
+
+\subsection{Formula di Cavalieri-Simpson}
+\label{Formula di Cavalieri-Simpson}
+\textbf{Condizione nell'uso = m dev'essere pari}\\
+Dato un integrale $$\int_{a}^{b} f(x) dx$$ 
+e posti gli intervalli uguali, calcoliamo $h = (b-a)/m$
+La formula di Cavalieri-Simpson è la seguente: $$\dfrac{h}{3} *[f(a)+ 4 \sum_{i=1(dispari)}^{m-1}f(a+ih) + 2 \sum_{i=1(pari)}^{m-2}f(a+ih) + f(b)]$$
+
+\subsection{Formula semplificata}
+\label{Formula semplificata}
+Da utilizzare dopo aver trovato una prima approssimazione \textbf{con trapezi composta}. Veloce perché ti permette di riutilizzare quanto precedentemente calcolato, riutilizzandolo e senza dover ricalcolare tutto da capo\\ \\
+Dato un nuovo m (solitamente corrisponde al doppio di quello precedente), abbiamo che la nuova approssimazione è $$ T_{i+i} = \dfrac{h_{i+1}}{2} * S_{i+1}$$
+
+Dove $$S_{i+i} = S_i + 2 \sum_{i=1(dispari)}^{m-1}f(a+ih) $$ ossia la valutazione dei nuovi intervalli sommata a quella precedentemente ottenuta \\ \\
+mentre $$S_i =  2 \sum_{i=1}^{m-1}f(a+ih)$$ non è altro che la valutazione degli intervalli precedenti calcolati con trapezi composta
